@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miel hair salon — 三宮・完全予約制</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── リセット & ベース ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: #FAF7F5;
+    color: #2A2422;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── タイポグラフィ ── */
+  .serif { font-family: 'Cormorant Garamond', serif; }
+  h1, h2 { font-family: 'Cormorant Garamond', serif; font-weight: 300; letter-spacing: 0.04em; }
+  h1 { font-size: clamp(2rem, 8vw, 3.2rem); line-height: 1.2; }
+  h2 { font-size: clamp(1.3rem, 4vw, 1.8rem); }
+
+  /* ── カラートークン ── */
+  :root {
+    --rose:    #C8856A;
+    --rose-lt: #F0DDD6;
+    --rose-dk: #9A5E4A;
+    --chalk:   #FAF7F5;
+    --sand:    #EDE8E4;
+    --charcoal:#2A2422;
+    --muted:   #7A6F6B;
+    --line-green: #06C755;
+  }
+
+  /* ── フェードインアニメーション ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ── レイアウト共通 ── */
+  .container { max-width: 480px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── ナビバー ── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250, 247, 245, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 0.5px solid var(--sand);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--charcoal);
+  }
+  .nav-reserve {
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--rose);
+    border: 0.5px solid var(--rose);
+    padding: 5px 14px;
+    border-radius: 999px;
+  }
+
+  /* ── ヒーロー ── */
+  .hero {
+    padding: 56px 20px 44px;
+    text-align: center;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .hero-eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .hero h1 { color: var(--charcoal); margin-bottom: 10px; }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--rose);
+  }
+  .hero-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 24px;
+  }
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .hero-tag {
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--rose-dk);
+    border: 0.5px solid var(--rose-lt);
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--rose-lt);
+  }
+  .hero-links {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .hero-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border: 0.5px solid var(--sand);
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #fff;
+  }
+  .hero-link svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+  /* ── 仕切り線 ── */
+  .divider {
+    width: 32px;
+    height: 0.5px;
+    background: var(--rose);
+    margin: 0 auto;
+  }
+
+  /* ── セクション共通 ── */
+  .section {
+    padding: 48px 20px;
+    max-width: 480px;
+    margin: 0 auto;
+    border-top: 0.5px solid var(--sand);
+  }
+  .section-eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: var(--rose);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--charcoal);
+    margin-bottom: 28px;
+    line-height: 1.3;
+  }
+
+  /* ── メニュー表 ── */
+  .menu-list { list-style: none; }
+  .menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 0.5px solid var(--sand);
+  }
+  .menu-item:first-child { border-top: 0.5px solid var(--sand); }
+  .menu-left {}
+  .menu-name {
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    letter-spacing: 0.03em;
+  }
+  .menu-time {
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+  .menu-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--rose-dk);
+    white-space: nowrap;
+  }
+  .menu-note {
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 14px;
+    line-height: 1.7;
+  }
+
+  /* ── 予約ステップ ── */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding-bottom: 24px;
+    position: relative;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 30px;
+    bottom: 0;
+    width: 0.5px;
+    background: var(--sand);
+  }
+  .step-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 0.5px solid var(--rose);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    color: var(--rose);
+    flex-shrink: 0;
+    background: var(--chalk);
+    position: relative;
+    z-index: 1;
+  }
+  .step-body { padding-top: 4px; }
+  .step-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    margin-bottom: 3px;
+    letter-spacing: 0.02em;
+  }
+  .step-desc {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── CTAボタン ── */
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 15px;
+    background: var(--charcoal);
+    color: var(--chalk);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 28px;
+    text-decoration: none;
+  }
+  .btn-primary:active { opacity: 0.85; }
+  .btn-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    background: var(--line-green);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    text-decoration: none;
+  }
+  .btn-line:active { opacity: 0.85; }
+  .btn-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    border: 0.5px solid var(--sand);
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    text-decoration: none;
+  }
+
+  /* ── マップ ── */
+  .map-placeholder {
+    width: 100%;
+    height: 180px;
+    background: var(--sand);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .map-placeholder iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  .access-info { font-size: 0.78rem; color: var(--muted); line-height: 2; }
+  .access-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--sand);
+  }
+  .access-row:last-child { border-bottom: none; }
+  .access-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--rose);
+    width: 52px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .access-val { font-size: 0.78rem; color: var(--charcoal); line-height: 1.7; }
+
+  /* ── FAQ ── */
+  .faq-list { display: flex; flex-direction: column; gap: 0; }
+  .faq-item {
+    padding: 16px 0;
+    border-bottom: 0.5px solid var(--sand);
+  }
+  .faq-item:first-child { border-top: 0.5px solid var(--sand); }
+  .faq-q {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .faq-q-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--rose);
+    flex-shrink: 0;
+    line-height: 1.3;
+  }
+  .faq-a {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.8;
+    padding-left: 22px;
+  }
+
+  /* ── フッター ── */
+  .footer {
+    background: var(--charcoal);
+    color: var(--sand);
+    padding: 40px 20px 32px;
+    text-align: center;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+  .footer-sub {
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .footer-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--sand);
+    opacity: 0.7;
+  }
+  .footer-link svg { width: 13px; height: 13px; }
+  .footer-copy {
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  /* ── フル幅ラッパー ── */
+  .full-nav-wrap { background: rgba(250,247,245,0.92); }
+  .full-footer-wrap { background: var(--charcoal); }
+</style>
+</head>
+<body>
+
+<!-- ナビ -->
+<div class="full-nav-wrap">
+  <nav class="nav" aria-label="サイトナビゲーション">
+    <span class="nav-logo serif">Miel</span>
+    <a href="#reserve" class="nav-reserve">ご予約</a>
+  </nav>
+</div>
+
+<!-- ヒーロー -->
+<header class="hero reveal">
+  <p class="hero-eyebrow">Kobe Sannomiya · Hair Salon</p>
+  <h1>髪と過ごす、<br><em>静かな時間を。</em></h1>
+  <p class="hero-sub">神戸・三宮｜完全予約制・女性専用</p>
+  <div class="hero-tags">
+    <span class="hero-tag">カット</span>
+    <span class="hero-tag">カラー</span>
+    <span class="hero-tag">縮毛矯正</span>
+    <span class="hero-tag">トリートメント</span>
+  </div>
+  <div class="hero-links">
+    <a href="https://instagram.com/" target="_blank" rel="noopener" class="hero-link" aria-label="Instagramを開く">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+      Instagram
+    </a>
+    <a href="https://maps.google.com/" target="_blank" rel="noopener" class="hero-link" aria-label="Googleマップを開く">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      Googleマップ
+    </a>
+  </div>
+</header>
+
+<!-- メニュー -->
+<section class="section reveal" id="menu" aria-labelledby="menu-heading">
+  <p class="section-eyebrow">Menu &amp; Price</p>
+  <h2 class="section-title" id="menu-heading">メニュー・料金</h2>
+  <ul class="menu-list" role="list">
+    <li class="menu-item">
+      <div class="menu-left">
+        <span class="menu-name">カット<span class="menu-time">約60分</span></span>
+      </div>
+      <span class="menu-price">¥4,500〜</span>
+    </li>
+    <li class="menu-item">
+      <div class="menu-left">
+        <span class="menu-name">カラー<span class="menu-time">約90分</span></span>
+      </div>
+      <span class="menu-price">¥8,000〜</span>
+    </li>
+    <li class="menu-item">
+      <div class="menu-left">
+        <span class="menu-name">カット + カラー<span class="menu-time">約120分</span></span>
+      </div>
+      <span class="menu-price">¥11,000〜</span>
+    </li>
+    <li class="menu-item">
+      <div class="menu-left">
+        <span class="menu-name">縮毛矯正<span class="menu-time">約180分</span></span>
+      </div>
+      <span class="menu-price">¥18,000〜</span>
+    </li>
+    <li class="menu-item">
+      <div class="menu-left">
+        <span class="menu-name">トリートメント<span class="menu-time">約30分</span></span>
+      </div>
+      <span class="menu-price">¥3,000〜</span>
+    </li>
+  </ul>
+  <p class="menu-note">※ 料金は髪の長さ・状態により異なります。<br>詳細はLINEにてお気軽にご相談ください。</p>
+</section>
+
+<!-- 予約方法 -->
+<section class="section reveal" id="reserve" aria-labelledby="reserve-heading">
+  <p class="section-eyebrow">How to Reserve</p>
+  <h2 class="section-title" id="reserve-heading">ご予約方法</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num" aria-hidden="true">1</div>
+      <div class="step-body">
+        <p class="step-title">LINEを友だち追加</p>
+        <p class="step-desc">下のボタンからMielの公式LINEを友だち追加してください。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num" aria-hidden="true">2</div>
+      <div class="step-body">
+        <p class="step-title">希望日時・メニューをメッセージ</p>
+        <p class="step-desc">「◯月◯日 ◯時ごろ、カット希望です」とお送りください。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num" aria-hidden="true">3</div>
+      <div class="step-body">
+        <p class="step-title">確認メッセージで予約確定</p>
+        <p class="step-desc">オーナーより24時間以内に確認メッセージをお送りします。</p>
+      </div>
+    </div>
+  </div>
+  <a href="https://line.me/" target="_blank" rel="noopener" class="btn-primary" aria-label="LINE公式アカウントを開く">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+    LINEで予約する
+  </a>
+  <a href="https://line.me/" target="_blank" rel="noopener" class="btn-line" aria-label="LINE友だち追加">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+    友だち追加
+  </a>
+  <a href="https://beauty.hotpepper.jp/" target="_blank" rel="noopener" class="btn-secondary" aria-label="Hotpepperビューティーで予約">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+    Hotpepperビューティーでも予約できます
+  </a>
+</section>
+
+<!-- アクセス -->
+<section class="section reveal" id="access" aria-labelledby="access-heading">
+  <p class="section-eyebrow">Access</p>
+  <h2 class="section-title" id="access-heading">アクセス</h2>
+  <div class="map-placeholder" role="img" aria-label="Googleマップ（埋め込みエリア）">
+    <!-- 実装時: <iframe src="https://www.google.com/maps/embed?pb=..."></iframe> -->
+    <span style="font-size:0.72rem; color:#7A6F6B; letter-spacing:0.08em;">Googleマップ 埋め込みエリア</span>
+  </div>
+  <div class="access-info">
+    <div class="access-row">
+      <span class="access-label">住所</span>
+      <span class="access-val">〒650-0000<br>兵庫県神戸市中央区三宮町X-X-X</span>
+    </div>
+    <div class="access-row">
+      <span class="access-label">最寄り駅</span>
+      <span class="access-val">三宮駅 徒歩5分</span>
+    </div>
+    <div class="access-row">
+      <span class="access-label">営業時間</span>
+      <span class="access-val">火〜土 10:00〜19:00<br>（最終受付 18:00）</span>
+    </div>
+    <div class="access-row">
+      <span class="access-label">定休日</span>
+      <span class="access-val">日・月曜日</span>
+    </div>
+    <div class="access-row">
+      <span class="access-label">駐車場</span>
+      <span class="access-val">なし（近隣にコインパーキングあり）</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section reveal" id="faq" aria-labelledby="faq-heading">
+  <p class="section-eyebrow">FAQ</p>
+  <h2 class="section-title" id="faq-heading">よくある質問</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <p class="faq-q"><span class="faq-q-mark" aria-hidden="true">Q</span>初めてでも予約できますか？</p>
+      <p class="faq-a">もちろんです。LINEでご連絡いただければ、施術内容やご要望など丁寧にお伺いします。</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-q"><span class="faq-q-mark" aria-hidden="true">Q</span>当日キャンセルはできますか？</p>
+      <p class="faq-a">前日までのご連絡をお願いしております。当日キャンセルの場合、次回よりキャンセル料（施術料の50%）をいただく場合があります。</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-q"><span class="faq-q-mark" aria-hidden="true">Q</span>子ども連れでも大丈夫ですか？</p>
+      <p class="faq-a">未就学児の同伴は安全のためお断りしております。小学生以上のお子さまはご相談ください。</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-q"><span class="faq-q-mark" aria-hidden="true">Q</span>カラーの持ちはどのくらいですか？</p>
+      <p class="faq-a">施術方法や髪質によりますが、おおよそ1〜2ヶ月程度です。色落ちが気になる場合はトリートメントの併用をおすすめしています。</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-q"><span class="faq-q-mark" aria-hidden="true">Q</span>支払い方法を教えてください。</p>
+      <p class="faq-a">現金・PayPay・カード（Visa・Mastercard）がご利用いただけます。</p>
+    </div>
+  </div>
+</section>
+
+<!-- フッター -->
+<div class="full-footer-wrap">
+  <footer class="footer" aria-label="フッター">
+    <p class="footer-logo serif">Miel</p>
+    <p class="footer-sub">Hair Salon · Kobe Sannomiya</p>
+    <div class="footer-links">
+      <a href="https://instagram.com/" target="_blank" rel="noopener" class="footer-link" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+        Instagram
+      </a>
+      <a href="https://maps.google.com/" target="_blank" rel="noopener" class="footer-link" aria-label="Googleマップ">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        Googleマップ
+      </a>
+      <a href="https://line.me/" target="_blank" rel="noopener" class="footer-link" aria-label="LINE">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="13" height="13"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        LINE
+      </a>
+    </div>
+    <p class="footer-copy">&copy; 2025 Miel hair salon. All rights reserved.</p>
+  </footer>
+</div>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
