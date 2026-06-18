@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ヒアリングシート — 予約前案内サイト制作</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; }
+  body {
+    background: #F5F2EF;
+    color: #2A2422;
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    padding: 32px 16px 64px;
+  }
+
+  .page { max-width: 640px; margin: 0 auto; }
+
+  /* ── ヘッダー ── */
+  .header { text-align: center; margin-bottom: 32px; }
+  .header-title { font-size: 1.5rem; font-weight: 500; color: #2A2422; margin-bottom: 4px; }
+  .header-sub { font-size: 0.85rem; color: #C8856A; margin-bottom: 12px; letter-spacing: 0.06em; }
+  .header-note {
+    background: #fff;
+    border-left: 3px solid #C8856A;
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: #7A6F6B;
+    text-align: left;
+    line-height: 1.7;
+  }
+
+  /* ── セクション ── */
+  .section {
+    background: #fff;
+    border-radius: 10px;
+    border: 0.5px solid #E8E2DD;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-head {
+    background: #C8856A;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-num {
+    font-size: 0.7rem;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    border-radius: 999px;
+    padding: 1px 8px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .section-title-text { font-size: 0.9rem; font-weight: 500; color: #fff; letter-spacing: 0.04em; }
+
+  /* ── フィールド ── */
+  .field { padding: 12px 16px; border-bottom: 0.5px solid #F0EBE6; }
+  .field:last-child { border-bottom: none; }
+  .field-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #9A5E4A;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .req {
+    font-size: 0.6rem;
+    background: #F0DDD6;
+    color: #9A5E4A;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-weight: 500;
+  }
+  input[type="text"],
+  input[type="url"],
+  input[type="tel"],
+  textarea {
+    width: 100%;
+    background: #FAF7F5;
+    border: 0.5px solid #E0D8D3;
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-size: 0.82rem;
+    color: #2A2422;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+  input[type="text"]:focus,
+  input[type="url"]:focus,
+  input[type="tel"]:focus,
+  textarea:focus { border-color: #C8856A; background: #fff; }
+  textarea { min-height: 80px; resize: vertical; line-height: 1.7; }
+  .field-hint { font-size: 0.68rem; color: #AAA09A; margin-top: 4px; }
+
+  /* ── チェックボックス ── */
+  .check-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #2A2422;
+    cursor: pointer;
+    user-select: none;
+  }
+  .check-item input[type="checkbox"] { display: none; }
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #D5C9C3;
+    border-radius: 4px;
+    background: #FAF7F5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.12s;
+  }
+  .check-item input:checked + .check-box {
+    background: #C8856A;
+    border-color: #C8856A;
+  }
+  .check-item input:checked + .check-box::after {
+    content: '';
+    width: 10px;
+    height: 6px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+
+  /* ── メニュー行 ── */
+  .menu-row { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .menu-row:last-child { margin-bottom: 0; }
+  .menu-row input { font-size: 0.8rem; }
+  .menu-price-wrap { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .menu-price-wrap span { font-size: 0.72rem; color: #7A6F6B; }
+  .menu-row input.short { width: 80px; }
+  .menu-add {
+    font-size: 0.72rem;
+    color: #C8856A;
+    background: transparent;
+    border: 0.5px dashed #C8856A;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .menu-add:hover { background: #FDF5F2; }
+
+  /* ── FAQ ── */
+  .faq-pair { padding: 10px 0; border-bottom: 0.5px solid #F0EBE6; }
+  .faq-pair:last-child { border-bottom: none; }
+  .faq-num { font-size: 0.68rem; font-weight: 500; color: #C8856A; margin-bottom: 5px; }
+  .faq-pair textarea { margin-bottom: 6px; min-height: 44px; }
+
+  /* ── 送信ボタン ── */
+  .submit-wrap { text-align: center; margin-top: 28px; }
+  .btn-submit {
+    background: #2A2422;
+    color: #FAF7F5;
+    border: none;
+    border-radius: 6px;
+    padding: 14px 40px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    width: 100%;
+    max-width: 320px;
+    transition: opacity 0.15s;
+  }
+  .btn-submit:hover { opacity: 0.82; }
+  .submit-note { font-size: 0.68rem; color: #AAA09A; margin-top: 8px; }
+
+  /* ── 完了メッセージ ── */
+  .done-msg {
+    display: none;
+    background: #fff;
+    border-radius: 10px;
+    border: 0.5px solid #E8E2DD;
+    padding: 32px 24px;
+    text-align: center;
+    margin-top: 24px;
+  }
+  .done-icon { font-size: 2rem; margin-bottom: 10px; }
+  .done-title { font-size: 1rem; font-weight: 500; color: #2A2422; margin-bottom: 6px; }
+  .done-sub { font-size: 0.8rem; color: #7A6F6B; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-title">ヒアリングシート</div>
+    <div class="header-sub">予約前案内サイト制作</div>
+    <div class="header-note">
+      記入いただいた内容をもとに、初めてのお客様が迷わず予約できる1ページサイトを制作します。<br>
+      わからない項目は空欄で構いません。おおよそ<strong>10〜15分</strong>で記入いただけます。
+    </div>
+  </div>
+
+  <form id="hearingForm" novalidate>
+
+    <!-- 1. 基本情報 -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <span class="section-title-text">基本情報</span>
+      </div>
+      <div class="field">
+        <div class="field-label">サロン名 <span class="req">必須</span></div>
+        <input type="text" name="salon_name" placeholder="例）Miel hair salon" required>
+      </div>
+      <div class="field">
+        <div class="field-label">オーナーのお名前</div>
+        <input type="text" name="owner_name" placeholder="">
+      </div>
+      <div class="field">
+        <div class="field-label">業種・ジャンル <span class="req">必須</span></div>
+        <div class="check-group" style="margin-bottom:8px;">
+          <label class="check-item"><input type="checkbox" name="genre" value="美容室"><span class="check-box"></span>美容室</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="ネイル"><span class="check-box"></span>ネイル</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="まつ毛"><span class="check-box"></span>まつ毛</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="エステ"><span class="check-box"></span>エステ</label>
+          <label class="check-item"><input type="checkbox" name="genre" value="リラク"><span class="check-box"></span>リラク</label>
+        </div>
+        <input type="text" name="genre_other" placeholder="その他：">
+      </div>
+      <div class="field">
+        <div class="field-label">所在地（都道府県・市区町村まで）</div>
+        <input type="text" name="address" placeholder="例）兵庫県神戸市中央区">
+      </div>
+      <div class="field">
+        <div class="field-label">営業時間</div>
+        <input type="text" name="hours" placeholder="例）火〜土 10:00〜19:00（最終受付 18:00）">
+      </div>
+      <div class="field">
+        <div class="field-label">定休日</div>
+        <input type="text" name="closed" placeholder="例）日・月曜日">
+      </div>
+      <div class="field">
+        <div class="field-label">駐車場</div>
+        <div class="check-group">
+          <label class="check-item"><input type="radio" name="parking" value="あり（台数：）"><span class="check-box"></span>あり</label>
+          <label class="check-item"><input type="radio" name="parking" value="なし"><span class="check-box"></span>なし</label>
+          <label class="check-item"><input type="radio" name="parking" value="近隣コインPあり"><span class="check-box"></span>近隣コインPあり</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. SNS・予約ツール -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <span class="section-title-text">SNS・予約ツール</span>
+      </div>
+      <div class="field">
+        <div class="field-label">使用中のSNS（複数選択可）</div>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox" name="sns" value="Instagram"><span class="check-box"></span>Instagram</label>
+          <label class="check-item"><input type="checkbox" name="sns" value="LINE公式"><span class="check-box"></span>LINE公式</label>
+          <label class="check-item"><input type="checkbox" name="sns" value="X（Twitter）"><span class="check-box"></span>X（Twitter）</label>
+          <label class="check-item"><input type="checkbox" name="sns" value="TikTok"><span class="check-box"></span>TikTok</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">予約受付方法（複数選択可）</div>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox" name="booking" value="Hotpepper"><span class="check-box"></span>Hotpepper</label>
+          <label class="check-item"><input type="checkbox" name="booking" value="MINIMO"><span class="check-box"></span>MINIMO</label>
+          <label class="check-item"><input type="checkbox" name="booking" value="Airリザーブ"><span class="check-box"></span>Airリザーブ</label>
+          <label class="check-item"><input type="checkbox" name="booking" value="LINE予約"><span class="check-box"></span>LINE予約</label>
+          <label class="check-item"><input type="checkbox" name="booking" value="DM手動"><span class="check-box"></span>DM手動</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">InstagramのURL</div>
+        <input type="url" name="ig_url" placeholder="https://instagram.com/your_account">
+      </div>
+      <div class="field">
+        <div class="field-label">LINE友だち追加URL</div>
+        <input type="url" name="line_url" placeholder="https://lin.ee/XXXXXXX">
+      </div>
+      <div class="field">
+        <div class="field-label">Hotpepper等の予約ページURL</div>
+        <input type="url" name="booking_url" placeholder="https://beauty.hotpepper.jp/...">
+      </div>
+    </div>
+
+    <!-- 3. メニュー・料金 -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-num">03</span>
+        <span class="section-title-text">メニュー・料金</span>
+      </div>
+      <div class="field">
+        <div class="field-label">掲載メニュー <span class="req">必須</span></div>
+        <div class="field-hint" style="margin-bottom:10px;">料金は「〜」表示でOKです。施術時間の目安もわかれば教えてください。</div>
+        <div id="menu-list">
+          <div class="menu-row">
+            <input type="text" name="menu_name[]" placeholder="メニュー名（例：カット）">
+            <div class="menu-price-wrap"><span>¥</span><input type="text" name="menu_price[]" class="short" placeholder="4,500〜"></div>
+            <div class="menu-price-wrap"><input type="text" name="menu_time[]" class="short" placeholder="60分〜"></div>
+          </div>
+          <div class="menu-row">
+            <input type="text" name="menu_name[]" placeholder="メニュー名（例：カラー）">
+            <div class="menu-price-wrap"><span>¥</span><input type="text" name="menu_price[]" class="short" placeholder="8,000〜"></div>
+            <div class="menu-price-wrap"><input type="text" name="menu_time[]" class="short" placeholder="90分〜"></div>
+          </div>
+          <div class="menu-row">
+            <input type="text" name="menu_name[]" placeholder="メニュー名">
+            <div class="menu-price-wrap"><span>¥</span><input type="text" name="menu_price[]" class="short" placeholder=""></div>
+            <div class="menu-price-wrap"><input type="text" name="menu_time[]" class="short" placeholder=""></div>
+          </div>
+        </div>
+        <button type="button" class="menu-add" onclick="addMenuRow()">＋ メニューを追加</button>
+      </div>
+      <div class="field">
+        <div class="field-label">料金に関する補足</div>
+        <input type="text" name="menu_note" placeholder="例）髪の長さ・状態によって変わります">
+      </div>
+    </div>
+
+    <!-- 4. 予約の流れ -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <span class="section-title-text">予約の流れ</span>
+      </div>
+      <div class="field">
+        <div class="field-label">STEP 1</div>
+        <input type="text" name="step1" placeholder="例）LINEを友だち追加する">
+      </div>
+      <div class="field">
+        <div class="field-label">STEP 2</div>
+        <input type="text" name="step2" placeholder="例）希望日時・メニューをメッセージで送る">
+      </div>
+      <div class="field">
+        <div class="field-label">STEP 3</div>
+        <input type="text" name="step3" placeholder="例）確認メッセージが届いたら予約確定">
+      </div>
+      <div class="field">
+        <div class="field-label">返信の目安時間</div>
+        <input type="text" name="reply_time" placeholder="例）24時間以内 / 当日中">
+      </div>
+    </div>
+
+    <!-- 5. FAQ -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-num">05</span>
+        <span class="section-title-text">よくある質問（FAQ）</span>
+      </div>
+      <div class="field">
+        <div class="field-hint" style="margin-bottom:12px;">お客様からよく受ける質問を3〜5つ教えてください。回答は簡単でOKです。</div>
+        <div class="faq-pair">
+          <div class="faq-num">Q1</div>
+          <textarea name="faq_q[]" placeholder="質問（例）初めてでも予約できますか？"></textarea>
+          <textarea name="faq_a[]" placeholder="回答（例）もちろんです。LINEでご連絡ください。"></textarea>
+        </div>
+        <div class="faq-pair">
+          <div class="faq-num">Q2</div>
+          <textarea name="faq_q[]" placeholder="質問（例）当日キャンセルはできますか？"></textarea>
+          <textarea name="faq_a[]" placeholder="回答"></textarea>
+        </div>
+        <div class="faq-pair">
+          <div class="faq-num">Q3</div>
+          <textarea name="faq_q[]" placeholder="質問"></textarea>
+          <textarea name="faq_a[]" placeholder="回答"></textarea>
+        </div>
+        <div class="faq-pair">
+          <div class="faq-num">Q4（任意）</div>
+          <textarea name="faq_q[]" placeholder="質問"></textarea>
+          <textarea name="faq_a[]" placeholder="回答"></textarea>
+        </div>
+        <div class="faq-pair">
+          <div class="faq-num">Q5（任意）</div>
+          <textarea name="faq_q[]" placeholder="質問"></textarea>
+          <textarea name="faq_a[]" placeholder="回答"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. デザイン -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-num">06</span>
+        <span class="section-title-text">デザイン・雰囲気のご希望</span>
+      </div>
+      <div class="field">
+        <div class="field-label">サロンの雰囲気（複数選択可）</div>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox" name="mood" value="ナチュラル・シンプル"><span class="check-box"></span>ナチュラル・シンプル</label>
+          <label class="check-item"><input type="checkbox" name="mood" value="かわいい・ガーリー"><span class="check-box"></span>かわいい・ガーリー</label>
+          <label class="check-item"><input type="checkbox" name="mood" value="大人・シック"><span class="check-box"></span>大人・シック</label>
+          <label class="check-item"><input type="checkbox" name="mood" value="モード・スタイリッシュ"><span class="check-box"></span>モード・スタイリッシュ</label>
+          <label class="check-item"><input type="checkbox" name="mood" value="ポップ・カジュアル"><span class="check-box"></span>ポップ・カジュアル</label>
+          <label class="check-item"><input type="checkbox" name="mood" value="お任せ"><span class="check-box"></span>お任せ</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">ベースカラーの好み</div>
+        <div class="check-group">
+          <label class="check-item"><input type="radio" name="color_pref" value="ホワイト系"><span class="check-box"></span>ホワイト系</label>
+          <label class="check-item"><input type="radio" name="color_pref" value="ベージュ・アイボリー"><span class="check-box"></span>ベージュ・アイボリー</label>
+          <label class="check-item"><input type="radio" name="color_pref" value="ピンク・ローズ"><span class="check-box"></span>ピンク・ローズ</label>
+          <label class="check-item"><input type="radio" name="color_pref" value="グリーン系"><span class="check-box"></span>グリーン系</label>
+          <label class="check-item"><input type="radio" name="color_pref" value="ブラック系"><span class="check-box"></span>ブラック系</label>
+          <label class="check-item"><input type="radio" name="color_pref" value="お任せ"><span class="check-box"></span>お任せ</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">参考サイト・Instagram URL</div>
+        <input type="url" name="ref_url" placeholder="参考にしたいサイトや雰囲気が近いアカウントのURL">
+        <div class="field-hint">「このサロンみたいな感じ」がわかると助かります</div>
+      </div>
+      <div class="field">
+        <div class="field-label">ロゴ・写真の有無</div>
+        <div class="check-group" style="margin-bottom:8px;">
+          <label class="check-item"><input type="checkbox" name="assets" value="ロゴあり"><span class="check-box"></span>ロゴあり</label>
+          <label class="check-item"><input type="checkbox" name="assets" value="写真あり"><span class="check-box"></span>写真あり</label>
+          <label class="check-item"><input type="checkbox" name="assets" value="素材なし（お任せ）"><span class="check-box"></span>素材なし（お任せ）</label>
+        </div>
+        <input type="text" name="assets_note" placeholder="写真の枚数など（例）サロン内・施術後 計8枚">
+      </div>
+    </div>
+
+    <!-- 7. その他 -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-num">07</span>
+        <span class="section-title-text">その他・ご要望</span>
+      </div>
+      <div class="field">
+        <textarea name="other" placeholder="自由にご記入ください" style="min-height:100px;"></textarea>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="btn-submit">送信する</button>
+      <p class="submit-note">送信後、3営業日以内にご連絡いたします</p>
+    </div>
+
+  </form>
+
+  <div class="done-msg" id="doneMsg">
+    <div class="done-icon">✓</div>
+    <div class="done-title">送信が完了しました</div>
+    <div class="done-sub">ご記入ありがとうございます。<br>内容を確認後、3営業日以内にご連絡いたします。</div>
+  </div>
+
+</div>
+
+<script>
+function addMenuRow() {
+  const list = document.getElementById('menu-list');
+  const row = document.createElement('div');
+  row.className = 'menu-row';
+  row.innerHTML = '<input type="text" name="menu_name[]" placeholder="メニュー名"><div class="menu-price-wrap"><span>¥</span><input type="text" name="menu_price[]" class="short" placeholder=""></div><div class="menu-price-wrap"><input type="text" name="menu_time[]" class="short" placeholder="分〜"></div>';
+  list.appendChild(row);
+  row.querySelector('input').focus();
+}
+
+document.getElementById('hearingForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  this.style.display = 'none';
+  document.getElementById('doneMsg').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+  radio.addEventListener('change', function() {
+    const name = this.name;
+    document.querySelectorAll('input[name="' + name + '"]').forEach(function(r) {
+      r.closest('.check-item').querySelector('.check-box').style.background = '';
+      r.closest('.check-item').querySelector('.check-box').style.borderColor = '';
+    });
+  });
+});
+</script>
+</body>
+</html>
